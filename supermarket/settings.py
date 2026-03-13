@@ -55,13 +55,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'supermarket.urls'
 
+# supermarket/settings.py
+
+from pathlib import Path
+
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'sales' / 'templates'],  # <-- add this
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -69,7 +76,6 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'supermarket.wsgi.application'
 
 
@@ -100,7 +106,19 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
 ]
+
+# settings.py
+
+# URL where users will be redirected if they try to access a login-required page
+LOGIN_URL = '/mylogin/'
+
+# URL where users will be redirected after a successful login
+LOGIN_REDIRECT_URL = '/dashboard/'  # change to the page you want
+
+# Optional: URL to redirect after logout
+LOGOUT_REDIRECT_URL = '/mylogin/'  # often same as LOGIN_URL
 
 
 # Internationalization
@@ -119,3 +137,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+ # your custom login page URL

@@ -1,0 +1,37 @@
+{% extends "sales/base.html" %}
+{% block content %}
+<style>
+table tr:nth-child(even){background:#f2f2f2;}
+div.card {padding:20px; color:white; border-radius:5px; flex:1;}
+.card-green {background:#27ae60;}
+.card-blue {background:#2980b9;}
+.card-red {background:#c0392b;}
+</style>
+
+<h2>Welcome, {{ user.username }}!</h2>
+
+    <p>You are successfully logged in.</p>
+
+    <a href="{% url 'logout' %}">Logout</a
+
+<h2>Supermarket POS Dashboard</h2>
+<div style="display:flex; gap:40px; margin-bottom:20px;">
+<div style="background:#27ae60;color:white;padding:20px;border-radius:5px;">
+<h3>Total Products</h3><p style="font-size:24px;">{{ total_products }}</p></div>
+<div style="background:#2980b9;color:white;padding:20px;border-radius:5px;">
+<h3>Total Sales Today</h3><p style="font-size:24px;">${{ total_sales }}</p></div>
+<div style="background:#c0392b;color:white;padding:20px;border-radius:5px;">
+<h3>Low Stock</h3><p style="font-size:24px;">{{ low_stock_count }}</p></div>
+</div>
+<h3>Recent Transactions</h3>
+<table>
+<tr><th>Receipt ID</th><th>Total</th><th>Date</th></tr>
+{% for transaction in recent_transactions %}
+<tr>
+<td>{{ transaction.id }}</td>
+<td>${{ transaction.total }}</td>
+<td>{{ transaction.date }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

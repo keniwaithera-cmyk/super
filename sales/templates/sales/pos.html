@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>POS - Point of Sale</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 60%; border-collapse: collapse; margin: 20px auto; }
+        th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+        button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center;">Point of Sale</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Qty</th>
+                <th>Add</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.stock }}</td>
+                <td><input type="number" id="qty-{{ product.id }}" value="1" min="1" max="{{ product.stock }}"></td>
+                <td><button onclick="addToCart({{ product.id }}, '{{ product.name }}', {{ product.price }})">Add</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function addToCart(id, name, price) {
+            let qty = document.getElementById('qty-' + id).value;
+            let cart = JSON.parse(localStorage.getItem('cart') || '{}');
+
+            if(cart[id]) {
+                cart[id].qty = parseInt(cart[id].qty) + parseInt(qty);
+                cart[id].total = cart[id].qty * price;
+            } else {
+                cart[id] = {name: name, qty: parseInt(qty), total: parseInt(qty) * price};
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(name + " added to cart!");
+        }
+
+        // Optional: send cart to checkout via POST
+        function checkout() {
+            let cart = localStorage.getItem('cart');
+            fetch("{% url 'checkout' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: "cart_data=" + encodeURIComponent(cart)
+            }).then(res => res.text()).then(data => {
+                document.body.innerHTML = data; // show receipt
+            });
+        }
+    </script>
+
+    <div style="text-align:center; margin-top:20px;">
+        <button onclick="checkout()">Checkout</button>
+    </div>
+</body>
+</html>

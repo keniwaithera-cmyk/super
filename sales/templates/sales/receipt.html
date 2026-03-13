@@ -1,0 +1,37 @@
+{% extends "sales/base.html" %}
+
+{% block content %}
+<h2>Receipt</h2>
+
+{% if transaction %}
+<p><strong>Receipt ID:</strong> {{ transaction.id }}</p>
+<p><strong>Date:</strong> {{ transaction.date|date:"Y-m-d H:i:s" }}</p>
+<p><strong>Cashier:</strong> {{ transaction.cashier.username if transaction.cashier else "N/A" }}</p>
+{% endif %}
+
+{% if cart %}
+<table>
+<tr>
+<th>Product</th>
+<th>Quantity</th>
+<th>Price</th>
+<th>Total</th>
+</tr>
+{% for id, item in cart.items %}
+<tr>
+<td>{{ item.name }}</td>
+<td>{{ item.qty }}</td>
+<td>{{ item.price|floatformat:2 }}</td>
+<td>{{ item.total|floatformat:2 }}</td>
+</tr>
+{% endfor %}
+</table>
+<h3>Total Paid: ${{ total|floatformat:2 }}</h3>
+{% else %}
+<p>No items recorded for this transaction.</p>
+<h3>Total: ${{ total|floatformat:2 }}</h3>
+{% endif %}
+
+<a href="{% url 'pos' %}"><button>Back to POS</button></a>
+<a href="#" onclick="window.print()"><button>Print Receipt</button></a>
+{% endblock %}

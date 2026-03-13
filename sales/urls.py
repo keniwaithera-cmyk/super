@@ -20,6 +20,22 @@ from django.urls import path
 from django.urls import path
 from . import views
 
+
+from django.urls import path
+from . import views
+from django.contrib.auth import views as auth_views
+
 urlpatterns = [
-    path('pos/', views.pos, name='pos'),
+    path("dashboard", views.dashboard, name="dashboard"),           # Dashboard page
+    path("", views.pos, name="pos"),                   # POS page
+    path("cart/", views.cart_view, name="cart"),           # Cart page
+    path("checkout/", views.checkout, name="checkout"),    # Checkout endpoint
+    path("receipt/<int:transaction_id>/", views.receipt, name="receipt"),  # Receipt page
+    path("products/", views.products, name="products"),
+    # Products list
+
+    path('mylogin/', auth_views.LoginView.as_view(template_name='login.html'), name='my_login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
 ]
+

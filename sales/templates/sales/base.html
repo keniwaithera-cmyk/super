@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supermarket POS</title>
+    <style>
+        body{font-family:Arial;margin:0;background:#f4f4f4;}
+        header{background:#2c3e50;color:white;padding:15px;}
+        nav a{color:white;margin-right:15px;text-decoration:none;font-weight:bold;}
+        .container{padding:20px;}
+        table{width:100%;border-collapse:collapse;margin-top:20px;}
+        th,td{border:1px solid #ddd;padding:10px;}
+        th{background:#34495e;color:white;}
+        button{padding:8px 12px;background:#27ae60;color:white;border:none;cursor:pointer;}
+        <style>
+body {font-family: Arial, sans-serif; margin:0; background:#f4f4f4;}
+header {background:#2c3e50; color:white; padding:15px;}
+nav a {color:white; margin-right:15px; text-decoration:none; font-weight:bold;}
+.container {padding:20px;}
+table {width:100%; border-collapse: collapse; margin-top:20px;}
+th, td {border:1px solid #ddd; padding:10px; text-align:center;}
+th {background:#34495e; color:white;}
+button {padding:8px 12px; background:#27ae60; color:white; border:none; cursor:pointer; border-radius:4px;}
+button:hover {background:#2ecc71;}
+input[type=number] {width:50px; text-align:center; border:1px solid #ccc; border-radius:4px;}
+
+    </style>
+
+</head>
+<body>
+<header>
+<h2>Supermarket POS System</h2>
+<nav>
+<a href="{% url 'pos' %}">POS</a>
+<a href="{% url 'cart' %}">Cart</a>
+<a href="{% url 'products' %}">Products</a>
+<a href="{% url 'dashboard' %}">Dashboard</a>
+</nav>
+</header>
+<div class="container">{% block content %}{% endblock %}</div>
+<h2>Point of Sale</h2>
+
+<table>
+<tr>
+<th>Product</th>
+<th>Price</th>
+<th>Add</th>
+</tr>
+
+{% for product in products %}
+<tr>
+<td>{{ product.name }}</td>
+<td>{{ product.price }}</td>
+<td>
+<form method="post" style="display:inline;">
+    {% csrf_token %}
+    <input type="hidden" name="product_id" value="{{ product.id }}">
+    <input type="number" name="quantity" value="1" min="1">
+    <button type="submit">Add</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>
