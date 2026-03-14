@@ -4,23 +4,26 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from .models import Product, Transaction
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib import messages
+from django.shortcuts import render, redirect
 
 # Only staff users can access POS
 def staff_required(user):
     return user.is_staff
-
 @login_required
 @user_passes_test(staff_required)
 def pos(request):
     products = Product.objects.all()
     return render(request, "sales/pos.html", {"products": products})
-
 @login_required
+
 @user_passes_test(staff_required)
 def cart_view(request):
     cart = request.session.get("cart", {})
     total = sum(item["total"] for item in cart.values())
     return render(request, "sales/cart.html", {"cart": cart, "total": total})
+
 
 @login_required
 @user_passes_test(staff_required)
@@ -55,15 +58,15 @@ def receipt(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id)
     # For simplicity, we just show total; for itemized, add TransactionItem model
     return render(request, "sales/receipt.html", {"cart": {}, "total": transaction.total, "transaction": transaction})
-
 @login_required
 @user_passes_test(staff_required)
 def products(request):
     products = Product.objects.all()
     return render(request, "sales/products.html", {"products": products})
-
 @login_required
+
 @user_passes_test(staff_required)
+
 def dashboard(request):
     total_products = Product.objects.count()
     today = timezone.now().date()
@@ -80,5 +83,22 @@ def dashboard(request):
     }
     return render(request, "sales/dashboard.html", context)
 
+
+
 def login(request):
-    return render(request, "myapp/login.html")  # use global: "login.html"
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)  # Log the user in
+            # Redirect staff to dashboard or POS
+            if user.is_staff:
+                return redirect('dashboard')
+            else:
+                messages.error(request, "You are not authorized to access POS.")
+                return redirect('login')
+        else:
+            messages.error(request, "Invalid username or password.")
+            return redirect('login')
+    return render(request, "sales/login.html")
