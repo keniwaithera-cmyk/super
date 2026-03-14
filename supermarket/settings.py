@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -56,16 +55,15 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'supermarket.urls'
 
 # supermarket/settings.py
-
 from pathlib import Path
 
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'sales' / 'templates'],  # <-- add this
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'templates'],  # points to global templates folder
+        'APP_DIRS': True,                  # searches app/templates/ automatically
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -78,7 +76,7 @@ TEMPLATES = [
 ]
 WSGI_APPLICATION = 'supermarket.wsgi.application'
 
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 

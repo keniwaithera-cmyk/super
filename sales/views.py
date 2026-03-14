@@ -79,3 +79,6 @@ def dashboard(request):
         "recent_transactions": recent_transactions,
     }
     return render(request, "sales/dashboard.html", context)
+
+def login(request):
+    return render(request, "myapp/login.html")  # use global: "login.html"
